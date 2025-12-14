@@ -1,0 +1,114 @@
+set nocompatible
+set number
+set relativenumber
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set smarttab
+set softtabstop=4
+set encoding=UTF-8
+set clipboard+=unnamedplus
+
+call plug#begin()
+	Plug 'joshdick/onedark.vim' "Colorscheme
+	Plug 'vim-airline/vim-airline' "Bottom status bar thing
+	Plug 'vim-airline/vim-airline-themes' "same colorscheme for airline
+	Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' } " file explorer type thing
+	Plug 'prabirshrestha/vim-lsp' "lsp 
+	Plug 'mattn/vim-lsp-settings' "install lsp when opening a file
+	Plug 'prabirshrestha/asyncomplete.vim'
+	Plug 'prabirshrestha/asyncomplete-lsp.vim'
+	Plug 'ap/vim-buftabline' "top bar to show open buffers
+	Plug 'sheerun/vim-polyglot'
+	Plug 'puremourning/vimspector' "debugging
+	Plug 'jasonccox/vim-wayland-clipboard'
+call plug#end()
+
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+let g:vimspector_enable_mappings = 'HUMAN'
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.readonly = '🔒'
+let g:airline_symbols.linenr = ' ␤:'
+
+syntax on
+let mapleader = " "
+set timeoutlen=200
+inoremap <leader><leader> <esc>
+vnoremap <leader><leader> <esc>
+cnoremap <leader><leader> <esc>
+nnoremap <leader><leader> <esc>
+nnoremap U <C-R>
+
+let g:lightline = { 'colorscheme': 'onedark' }
+colorscheme onedark
+
+map <F2> :NERDTreeToggle<CR>
+let NERDTreeWinSize=32
+let NERDTreeWinPos="left"
+let NERDTreeShowHidden=1
+let NERDTreeAutoDeleteBuffer=1
+
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+map gn :bnext<CR>
+map gp :bprevious<CR>
+map bc :bd<CR>
+autocmd FileType cpp map <C-b> :!./build.sh<CR>
+autocmd FileType cs map <C-b> :!dotnet build<CR>
+autocmd FileType cpp map <C-r> :!./build.sh Release<CR>
+autocmd FileType cs map <C-r> :!dotnet build --configuration Release<CR>
+
+nmap <leader>si <Plug>VimspectorStepInto
+nmap <leader>so <Plug>VimspectorStepOut
+nmap <leader>sn <Plug>VimspectorStepOver
+nnoremap <leader>rs :call vimspector#Reset()<CR>
+
+if executable('clangd')
+	au User lsp_setup call lsp#register_server({
+		\ 'name': 'clangd',
+		\ 'cmd': {server_info->['clangd']},
+		\ 'allowlist': ['cpp', 'c']
+		\ })
+endif
+
+let g:lsp_diagnostics_float_cursor = 1
+function! s:on_lsp_buffer_enabled() abort
+	setlocal omnifunc=lsp#complete
+	setlocal signcolumn=yes
+	if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+	nmap <buffer> gd <plug>(lsp-definition)
+	nmap <buffer> gS <plug>(lsp-document-symbol-search)
+	nmap <buffer> gs <plug>(lsp-workspace-symbol-search)
+	nmap <buffer> <leader>r <plug>(lsp-references)
+	nmap <buffer> gi <plug>(lsp-implementation)
+	nmap <buffer> gt <plug>(lsp-type-definition)
+	nmap <buffer> <leader>rn <plug>(lsp-rename)
+	nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+	nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+	nmap <buffer> K <plug>(lsp-hover)
+	nmap <buffer> <leader>n <plug>(lsp-next-error)
+	nmap <buffer> <leader>p <plug>(lsp-previous-error)
+	nmap <buffer> ga <plug>(lsp-code-action)
+	nmap <buffer> gk <plug>(lsp-document-format)
+
+	let g:lsp_format_sync_timeout = 1000
+	autocmd! BufWritePre *.rs, *.go call execute('LspDocumentFormatSync')
+endfunction
+
+augroup lsp_install
+	au!
+	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
