@@ -1,7 +1,7 @@
 {
   "layer": "bottom",
   "position": "top",
-  "height": 20,
+  "height": 24,
   "spacing": 5,
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["hyprland/window"],
@@ -17,8 +17,6 @@
           "3": "",
           "4": "",
           "5": "",
-          "active": "",
-          "default": ""
       },
       "persistent-workspaces": {
           "*": [ 1,2,3,4,5 ], // 2-5 on every monitor
