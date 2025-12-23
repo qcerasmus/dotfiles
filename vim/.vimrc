@@ -8,6 +8,7 @@ set smarttab
 set softtabstop=4
 set encoding=UTF-8
 set clipboard+=unnamedplus
+set ignorecase
 
 call plug#begin()
 	Plug 'joshdick/onedark.vim' "Colorscheme
