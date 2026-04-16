@@ -24,3 +24,30 @@ keymap("n", "<C-k>", "<C-W>k")
 keymap("n", "<C-l>", "<C-W>l")
 keymap("n", "gn", ":bnext<cr>")
 keymap("n", "gp", ":bprevious<cr>")
+keymap("n", "rs", ":call vimspector#Reset()<cr>")
+
+--Debugger stuff
+keymap("n", "<F9>", "<cmd>DapToggleBreakpoint<cr>")
+keymap("n", "<F5>", "<cmd>DapContinue<cr>")
+keymap("n", "<F10>", "<cmd>DapStepOver<cr>")
+keymap("n", "<F11>", "<cmd>DapStepInto<cr>")
+keymap("n", "<F12>", "<cmd>DapStepOut<cr>")
+keymap("n", "<leader>rs", "<cmd>DapTerminate<cr><cmd>DapCloseUI<cr>")
+
+local autocmd = vim.api.nvim_create_autocmd
+autocmd("FileType", {
+    pattern = { 'cpp', 'c', 'h', 'hpp' },
+    callback = function(opts)
+        keymap("n", "<C-b>", "<cmd>!./build.sh<cr>")
+        keymap("n", "<C-r>", "<cmd>!./build.sh release<cr>")
+    end,
+})
+
+autocmd("FileType", {
+    pattern = { 'cs' },
+    callback = function(opts)
+        keymap("n", "<C-b>", "<cmd>!dotnet build<cr>")
+        keymap("n", "<C-b>", "<cmd>:!dotnet build --configuration Release<cr>")
+    end,
+})
+
