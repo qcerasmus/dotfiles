@@ -1,10 +1,3 @@
-set nocompatible
-set number
-set relativenumber
-set autoindent
-set tabstop=4
-set shiftwidth=4
-set smarttab
 set softtabstop=4
 set encoding=UTF-8
 set clipboard+=unnamedplus
@@ -68,6 +61,7 @@ map gn :bnext<CR>
 map gp :bprevious<CR>
 map bc :bd<CR>
 autocmd FileType cpp map <C-b> :!./build.sh<CR>
+autocmd FileType cpp map <C-t> :RunSmall ctest --test-dir xbuild/Debug/testing<CR>
 autocmd FileType cs map <C-b> :!dotnet build<CR>
 autocmd FileType cpp map <C-r> :!./build.sh Release<CR>
 autocmd FileType cs map <C-r> :!dotnet build --configuration Release<CR>
